@@ -13,16 +13,13 @@ when isMainModule:
 
   let isLocal = if dirExists "nimbledeps": true else: false
   let code = execCmd "nimble install --depsOnly --localdeps --accept"
-
-  let
-    semvarRegex =
-      re"(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?"
+  let semvarRegex = r"\d|[1-9]\d*)\.(\d|[1-9]\d*)\.(\d|[1-9]\d*"
 
   var nimbleMinorVersion: int
 
   try:
     nimbleMinorVersion =
-      parseInt execCmdEx("nimble --version")[0].findAll(semvarRegex)[0].split(".")[1]
+      parseInt execCmdEx("nimble --version")[0].findAll(re(fmt"({semvarRegex})"))[0].split(".")[1]
   except:
     echo "Unable to parse nimble version."
     quit(1)
@@ -37,10 +34,10 @@ when isMainModule:
 
   for package in walkDir "nimbledeps/" & pkgsDir:
     var name = package.path
-    removePrefix(name, "nimbledeps/" & pkgsDir)
+    name.removePrefix("nimbledeps/" & pkgsDir)
+    name = name.findAll(re fmt"(\w+\-{semvarRegex})")[0]
 
     echo &"Prefetching {name}..."
-    echo name
 
     let
       json = parseJson readFile(package.path & "/nimblemeta.json")
