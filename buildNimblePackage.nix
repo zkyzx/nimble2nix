@@ -7,7 +7,7 @@
   buildInputs ? [],
   nativeBuildInputs ? [],
 }:
-pkgs.nim2Packages.buildNimPackage {
+pkgs.buildNimPackage {
   inherit name src nativeBuildInputs;
   buildInputs =
     buildInputs
