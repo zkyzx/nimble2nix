@@ -6,9 +6,12 @@
   deps ? src + "/nimble2nix.json",
   buildInputs ? [],
   nativeBuildInputs ? [],
+  nimFlags ? [],
+  nimRelease ? true,
+  nimDefines ? [],
 }:
 pkgs.buildNimPackage {
-  inherit name src nativeBuildInputs;
+  inherit name src nativeBuildInputs nimFlags nimRelease nimDefines;
   buildInputs =
     buildInputs
     ++ (pkgs.lib.mapAttrsToList
