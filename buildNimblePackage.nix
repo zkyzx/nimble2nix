@@ -9,9 +9,10 @@
   nimFlags ? [],
   nimRelease ? true,
   nimDefines ? [],
+  postInstall ? '''',
 }:
 pkgs.buildNimPackage {
-  inherit name src nativeBuildInputs nimFlags nimRelease nimDefines;
+  inherit name src nativeBuildInputs nimFlags nimRelease nimDefines postInstall;
   buildInputs =
     buildInputs
     ++ (pkgs.lib.mapAttrsToList
